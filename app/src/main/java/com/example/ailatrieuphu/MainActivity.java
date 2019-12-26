@@ -13,6 +13,8 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
@@ -56,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
                         launchActivityMenu();
                     } else {
                         String msg = json.getString("msg");
-                        taoThongBao("Thông báo", msg).show();
+                        new SweetAlertDialog(MainActivity.this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Đăng nhập thất bại")
+                        .setContentText("Sai tài khoản hoặc mật khẩu, vui lòng nhập lại")
+                        .show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -64,18 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }.execute(TaiKhoan, MatKhau);
-    }
-
-    public AlertDialog taoThongBao(String tieuDe, String thongBao) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(thongBao).setTitle(tieuDe);
-        builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        return builder.create();
     }
 
     public void LaunchForget(View view) {
