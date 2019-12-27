@@ -8,7 +8,7 @@
     tools:context=".CauHoi">
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/txtNoiDung"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/TienNap"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -82,12 +82,12 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/profile5"
-        app:layout_constraintEnd_toStartOf="@+id/username2"
+        app:layout_constraintEnd_toStartOf="@+id/txtLife"
         app:layout_constraintStart_toEndOf="@+id/profile5"
         app:layout_constraintTop_toTopOf="@+id/profile5" />
 
     <TextView
-        android:id="@+id/username2"
+        android:id="@+id/txtLife"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="125dp"
@@ -116,6 +116,7 @@
         android:layout_marginRight="50dp"
         android:text="B. Wimbledon"
         android:textColor="#FFFFFF"
+        android:onClick="TraLoiB"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -207,6 +208,7 @@
         android:layout_marginRight="50dp"
         android:text="C. Roland Garos"
         android:textColor="#FFFFFF"
+        android:onClick="TraLoiC"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnTraLoi2" />
@@ -223,6 +225,7 @@
         android:layout_marginRight="50dp"
         android:text="D. Mỹ mở rộng"
         android:textColor="#FFFFFF"
+        android:onClick="TraLoiD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnTraLoi3" />
@@ -240,7 +243,7 @@
         android:layout_marginBottom="250dp"
         android:text="A. Australia mở rộng"
         android:textColor="#FFFFFF"
-        android:onClick="Correct"
+        android:onClick="TraLoiA"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -273,5 +276,5 @@
         app:layout_constraintBottom_toTopOf="@+id/btnDangNhap15"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username2" />
+        app:layout_constraintTop_toBottomOf="@+id/txtLife" />
 </androidx.constraintlayout.widget.ConstraintLayout>

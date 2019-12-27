@@ -44,7 +44,7 @@ public class NapCredit extends AppCompatActivity implements LoaderManager.Loader
         editor = sharedPreferences.edit();
         String credit = sharedPreferences.getString("credit", "");
         txtCredit = findViewById(R.id.lblSoDu);
-        this.txtCredit.setText("Số dư trong tài khoản: " + credit);
+        this.txtCredit.setText("Số dư trong tài khoản: " + credit );
 
     }
 

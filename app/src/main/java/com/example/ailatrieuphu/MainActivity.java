@@ -2,8 +2,6 @@ package com.example.ailatrieuphu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -78,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                                 })
                                 .show();
                     } else {
-                        String msg = json.getString("msg");
                         new SweetAlertDialog(MainActivity.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Đăng nhập thất bại")
                         .setContentText("Sai tài khoản hoặc mật khẩu, vui lòng nhập lại")

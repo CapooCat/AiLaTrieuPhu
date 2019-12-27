@@ -29,4 +29,8 @@
     <style name="button_correct">
         <item name="android:background">@drawable/buttonstyle4</item>
     </style>
+
+    <style name="button_wrong">
+        <item name="android:background">@drawable/buttonstyle5</item>
+    </style>
 </resources>

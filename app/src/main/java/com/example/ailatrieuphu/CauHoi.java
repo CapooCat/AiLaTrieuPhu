@@ -8,10 +8,12 @@ import androidx.core.content.ContextCompat;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.renderscript.Sampler;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
@@ -30,6 +32,9 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -40,6 +45,16 @@ import java.util.Random;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CauHoi extends AppCompatActivity {
+    Button btn1;
+    Button btn2;
+    Button btn3;
+    Button btn4;
+    TextView NoiDung,txtCredit,txtLife;
+    int DapAn;
+    int Life=0;
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     private static final long START_TIME_IN_MILLIS= 30000;
 
@@ -53,6 +68,40 @@ public class CauHoi extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cau_hoi);
+
+        this.btn1= findViewById(R.id.btnTraLoi1);
+        this.btn2= findViewById(R.id.btnTraLoi2);
+        this.btn3= findViewById(R.id.btnTraLoi3);
+        this.btn4= findViewById(R.id.btnTraLoi4);
+        txtCredit = findViewById(R.id.TienNap);
+        NoiDung = findViewById(R.id.txtNoiDung);
+        txtLife = findViewById(R.id.txtLife);
+        txtLife.setText(String.valueOf(Life));
+
+        sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        String credit = sharedPreferences.getString("credit", "");
+        this.txtCredit.setText(credit);
+
+        Intent intent = getIntent();
+        String ID = intent.getStringExtra("ID");
+        new CauHoiLoader(){
+            @Override
+            protected void onPostExecute(String a) {
+                try {
+                    JSONObject json = new JSONObject(a);
+                    JSONArray item = json.getJSONArray("dsCauHoi");
+                    NoiDung.setText(item.getJSONObject(0).getString("noi_dung"));
+                    btn1.setText(item.getJSONObject(0).getString("phuong_an_a"));
+                    btn2.setText(item.getJSONObject(0).getString("phuong_an_b"));
+                    btn3.setText(item.getJSONObject(0).getString("phuong_an_c"));
+                    btn4.setText(item.getJSONObject(0).getString("phuong_an_d"));
+                    DapAn = item.getJSONObject(0).getInt("dap_an");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.execute(ID);
 
 
         Button mShowDialog = findViewById(R.id.btnTroGiup);
@@ -259,19 +308,19 @@ public class CauHoi extends AppCompatActivity {
 
 
 
-        if( name[index] == "A")
+        if(name[index] == "a")
         {
             mCauTraLoi.setTextColor(getResources().getColor(android.R.color.holo_orange_light));
         }
-        if(name[index] == "B")
+        if(name[index] == "b")
         {
             mCauTraLoi.setTextColor(getResources().getColor(android.R.color.holo_blue_light));
         }
-        if(name[index] == "C")
+        if(name[index] == "c")
         {
             mCauTraLoi.setTextColor(getResources().getColor(android.R.color.holo_green_light));
         }
-        if(name[index] == "D")
+        if(name[index] == "d")
         {
             mCauTraLoi.setTextColor(getResources().getColor(android.R.color.holo_red_light));
         }
@@ -287,8 +336,112 @@ public class CauHoi extends AppCompatActivity {
         return dataVals;
     }
 
-    public void Correct(View view) {
-        view.setBackgroundResource(R.drawable.buttonstyle4);
+    public void Correct()
+    {
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        mTimeLeftInMillis = START_TIME_IN_MILLIS;
+        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Bạn đã trả lời chính xác")
+                .setConfirmText("tiếp tục")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                        Intent intent = new Intent (CauHoi.this,ChonLinhVuc.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                    }
+                })
+                .show();
+    }
+
+    public void inCorrect()
+    {
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        mTimeLeftInMillis = START_TIME_IN_MILLIS;
+        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("Bạn đã trả lời sai")
+                .setConfirmText("tiếp tục")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                        Intent intent = new Intent (CauHoi.this,ChonLinhVuc.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                    }
+                })
+                .show();
+    }
+
+    public void TraLoiA(View view) {
+        if (DapAn == 1) {
+            view.setBackgroundResource(R.drawable.buttonstyle4);
+            Correct();
+        }
+        if (DapAn == 2)
+            btn2.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 3)
+            btn3.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 4)
+            btn4.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn != 1) {
+            view.setBackgroundResource(R.drawable.buttonstyle5);
+            inCorrect();
+        }
+
+    }
+    public void TraLoiB(View view) {
+        if (DapAn == 2) {
+            view.setBackgroundResource(R.drawable.buttonstyle4);
+            Correct();
+        }
+        if (DapAn == 1)
+            btn1.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 3)
+            btn3.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 4)
+            btn4.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn != 2){
+            view.setBackgroundResource(R.drawable.buttonstyle5);
+            inCorrect();
+        }
+
+    }
+    public void TraLoiC(View view) {
+        if (DapAn == 3) {
+            view.setBackgroundResource(R.drawable.buttonstyle4);
+            Correct();
+        }
+        if (DapAn == 1)
+            btn1.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 2)
+            btn2.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 4)
+            btn4.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn != 3){
+            view.setBackgroundResource(R.drawable.buttonstyle5);
+            inCorrect();
+        }
+    }
+    public void TraLoiD(View view) {
+        if (DapAn == 4) {
+            view.setBackgroundResource(R.drawable.buttonstyle4);
+            Correct();
+        }
+        if (DapAn == 1)
+            btn1.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 2)
+            btn2.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 3)
+            btn3.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn != 4){
+            view.setBackgroundResource(R.drawable.buttonstyle5);
+            inCorrect();
+        }
+
     }
 
 }

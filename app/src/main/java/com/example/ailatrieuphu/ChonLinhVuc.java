@@ -27,6 +27,7 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
     TextView txtUsername,txtCredit;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    String ID1,ID2,ID3,ID4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +67,16 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
                 for (int i = 0; i < itemsArray.length(); i++) {
 
                     this.btn1.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
+                    ID1= itemsArray.getJSONObject(i).getString("linh_vuc_id");
                     i++;
                     this.btn2.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
+                    ID2= itemsArray.getJSONObject(i).getString("linh_vuc_id");
                     i++;
                     this.btn3.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
+                    ID3= itemsArray.getJSONObject(i).getString("linh_vuc_id");
                     i++;
                     this.btn4.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
+                    ID4= itemsArray.getJSONObject(i).getString("linh_vuc_id");
             }
 
         } catch (JSONException e) {
@@ -84,9 +89,35 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
 
     }
 
-    public void LaunchCauHoi(View view) {
+    public void LaunchCauHoi1(View view) {
 
         Intent intent = new Intent(this, CauHoi.class);
+        String layID = ID1;
+        intent.putExtra("ID", layID);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
+    }
+    public void LaunchCauHoi2(View view) {
+
+        Intent intent = new Intent(this, CauHoi.class);
+        String layID = ID2;
+        intent.putExtra("ID", layID);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
+    }
+    public void LaunchCauHoi3(View view) {
+
+        Intent intent = new Intent(this, CauHoi.class);
+        String layID = ID3;
+        intent.putExtra("ID", layID);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
+    }
+    public void LaunchCauHoi4(View view) {
+
+        Intent intent = new Intent(this, CauHoi.class);
+        String layID = ID4;
+        intent.putExtra("ID", layID);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
     }
