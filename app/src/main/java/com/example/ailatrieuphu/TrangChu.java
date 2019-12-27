@@ -1,6 +1,7 @@
 package com.example.ailatrieuphu;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -9,15 +10,20 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import android.graphics.Color;
 
 public class TrangChu extends AppCompatActivity {
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
     boolean doubleBackToExitPressedOnce = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trang_chu);
+        sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+
     }
 
     public void LaunchNapCredit(View view) {

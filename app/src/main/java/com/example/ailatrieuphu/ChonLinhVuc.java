@@ -58,8 +58,7 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
                     i++;
                     this.btn3.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
                     i++;
-                this.btn4.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                //this.wTacGiaTextView.get(i).get().setText(itemsArray.getJSONObject(i).getString("tac_gia"));
+                    this.btn4.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
             }
 
         } catch (JSONException e) {
