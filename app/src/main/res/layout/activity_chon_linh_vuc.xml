@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/TienCredit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -32,12 +32,12 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/profile4"
-        app:layout_constraintEnd_toStartOf="@+id/username"
+        app:layout_constraintEnd_toStartOf="@+id/NguoiDung"
         app:layout_constraintStart_toEndOf="@+id/profile4"
         app:layout_constraintTop_toTopOf="@+id/profile4" />
 
     <TextView
-        android:id="@+id/username"
+        android:id="@+id/NguoiDung"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="125dp"

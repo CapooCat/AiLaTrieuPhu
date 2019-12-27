@@ -35,10 +35,11 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(FILE_NAME_SHAREREF, MODE_PRIVATE);
         editor = sharedPreferences.edit();
         String token = sharedPreferences.getString("TOKEN", "");
-        Log.d("TOKEN",token);
-        if (token != "") { launchActivityMenu(); }
-
-
+        Log.d("TOKEN", token);
+        if (token != "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
     }
 
     public void launchActivityMenu() {
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         EditText txtUsername = findViewById(R.id.txtTaiKhoan);
         EditText txtPassword = findViewById(R.id.txtMatKhau);
 
-        String TaiKhoan = txtUsername.getText().toString();
+        final String TaiKhoan = txtUsername.getText().toString();
         String MatKhau = txtPassword.getText().toString();
 
         new DangNhapLoader(){
@@ -60,7 +61,11 @@ public class MainActivity extends AppCompatActivity {
                     boolean success = json.getBoolean("success");
                     if (success) {
                         String token = "Bearer " + json.getString("token");
+                        String credit = json.getString("credit");
+                        String Username = TaiKhoan;
                         editor.putString("TOKEN", token);
+                        editor.putString("credit", credit);
+                        editor.putString("ten_dang_nhap", Username);
                         editor.commit();
                         new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Đăng nhập thành công")

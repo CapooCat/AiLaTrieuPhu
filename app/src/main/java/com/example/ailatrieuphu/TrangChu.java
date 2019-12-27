@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class TrangChu extends AppCompatActivity {
 
+    TextView txtCredit, txtUser;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     boolean doubleBackToExitPressedOnce = false;
@@ -20,9 +22,14 @@ public class TrangChu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trang_chu);
+        txtCredit = findViewById(R.id.Credit);
+        txtUser = findViewById(R.id.Username);
         sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        String token = sharedPreferences.getString("TOKEN", "");
+        String credit = sharedPreferences.getString("credit", "");
+        String User = sharedPreferences.getString("ten_dang_nhap", "");
+        this.txtUser.setText(User);
+        this.txtCredit.setText(credit);
 
     }
 

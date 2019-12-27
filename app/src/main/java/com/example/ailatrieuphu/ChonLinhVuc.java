@@ -7,6 +7,7 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +24,9 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
     private Button btn2;
     private Button btn3;
     private Button btn4;
+    TextView txtUsername,txtCredit;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,15 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         this.btn2 = findViewById(R.id.btnLinhVuc2);
         this.btn3 = findViewById(R.id.btnLinhVuc3);
         this.btn4 = findViewById(R.id.btnLinhVuc4);
+        txtUsername = findViewById(R.id.NguoiDung);
+        txtCredit = findViewById(R.id.TienCredit);
+        sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        String credit = sharedPreferences.getString("credit", "");
+        String User = sharedPreferences.getString("ten_dang_nhap", "");
+        this.txtUsername.setText(User);
+        this.txtCredit.setText(credit);
+
     }
 
     @NonNull

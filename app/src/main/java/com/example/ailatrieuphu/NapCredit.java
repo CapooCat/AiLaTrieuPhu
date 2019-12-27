@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +22,9 @@ public class NapCredit extends AppCompatActivity implements LoaderManager.Loader
     private Button btn2500C;
     private Button btn5000C;
     private Button btn10000C;
+    TextView txtCredit;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,12 @@ public class NapCredit extends AppCompatActivity implements LoaderManager.Loader
         this.btn2500C = findViewById(R.id.btn2500);
         this.btn5000C = findViewById(R.id.btn5000);
         this.btn10000C = findViewById(R.id.btn10000);
+        sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        String credit = sharedPreferences.getString("credit", "");
+        txtCredit = findViewById(R.id.lblSoDu);
+        this.txtCredit.setText("Số dư trong tài khoản: " + credit);
+
     }
 
     @Override
