@@ -54,7 +54,7 @@ public class ThongTinXepHangAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return this.mListThongTinXepHang == null ? 0 : this.mListThongTinXepHang.size();
+        return this.mListThongTinXepHang == null ? 1 : this.mListThongTinXepHang.size();
     }
 
     class ThongTinXepHangViewHolder extends  RecyclerView.ViewHolder {
