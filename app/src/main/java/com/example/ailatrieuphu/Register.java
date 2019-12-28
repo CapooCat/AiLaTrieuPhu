@@ -53,13 +53,14 @@ public class Register extends AppCompatActivity {
                                     @Override
                                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                                         sweetAlertDialog.dismissWithAnimation();
+                                        finish();
                                     }
                                 })
                                 .show();
                     } else {
                         String msg = json.getString("msg");
                         new SweetAlertDialog(Register.this, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("Đăng nhập thất bại")
+                                .setTitleText("Đăng ký thất bại")
                                 .setContentText(msg)
                                 .show();
                     }

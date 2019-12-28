@@ -144,12 +144,13 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        final String NguoiChoi = sharedPreferences.getString("id", "");
         if(Diem>0)
         {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 new SweetAlertDialog(ChonLinhVuc.this, SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("Thông báo")
-                        .setContentText("Bạn có chắc là muốn thoát ?? Điểm hiện tại của bạn là: "+Diem+" sẽ bị mất")
+                        .setContentText("Bạn có chắc là muốn thoát ?? Điểm hiện tại của bạn là: "+Diem)
                         .setCancelButton("không", new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
@@ -160,6 +161,7 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                new UpdateDiem().execute(NguoiChoi,String.valueOf(Diem));
                                 Intent intent = new Intent (ChonLinhVuc.this,TrangChu.class);
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);

@@ -167,6 +167,7 @@ public class CauHoi extends AppCompatActivity {
                                 intent.putExtra("Life", Life);
                                 intent.putExtra("Cau", Cau);
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
                             }
                         })
                         .show();
@@ -213,6 +214,7 @@ public class CauHoi extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        final String NguoiChoi = sharedPreferences.getString("id", "");
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             new SweetAlertDialog(CauHoi.this, SweetAlertDialog.WARNING_TYPE)
                     .setTitleText("Thông báo")
@@ -230,6 +232,7 @@ public class CauHoi extends AppCompatActivity {
                             mCountDownTimer.cancel();
                             mTimerRunning = false;
                             mTimeLeftInMillis = START_TIME_IN_MILLIS;
+                            new UpdateDiem().execute(NguoiChoi,String.valueOf(Diem));
                             Intent intent = new Intent (CauHoi.this,TrangChu.class);
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
@@ -390,6 +393,7 @@ public class CauHoi extends AppCompatActivity {
 
     public void inCorrect()
     {
+        final String NguoiChoi = sharedPreferences.getString("id", "");
         if(Life == 0)
         {
             mCountDownTimer.cancel();
@@ -402,6 +406,7 @@ public class CauHoi extends AppCompatActivity {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
                             sweetAlertDialog.dismissWithAnimation();
+                            new UpdateDiem().execute(NguoiChoi,String.valueOf(Diem));
                             Intent intent = new Intent (CauHoi.this,TrangChu.class);
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
