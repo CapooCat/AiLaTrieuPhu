@@ -153,24 +153,28 @@ public class CauHoi extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Đã hết giờ")
-                        .setConfirmText("Tiếp theo")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.dismissWithAnimation();
-                                Cau = Cau + 1;
-                                Life = Life - 1;
-                                Intent intent = new Intent (CauHoi.this, ChonLinhVuc.class);
-                                intent.putExtra("Diem", Diem);
-                                intent.putExtra("Life", Life);
-                                intent.putExtra("Cau", Cau);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
-                            }
-                        })
-                        .show();
+                if (Life == 0) {
+                    inCorrect();
+                } else {
+                    new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Đã hết giờ")
+                            .setConfirmText("Tiếp theo")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.dismissWithAnimation();
+                                    Cau = Cau + 1;
+                                    Life = Life - 1;
+                                    Intent intent = new Intent(CauHoi.this, ChonLinhVuc.class);
+                                    intent.putExtra("Diem", Diem);
+                                    intent.putExtra("Life", Life);
+                                    intent.putExtra("Cau", Cau);
+                                    startActivity(intent);
+                                    overridePendingTransition(R.anim.slide_right, R.anim.slide_out_left);
+                                }
+                            })
+                            .show();
+            }
             }
         }.start();
 
