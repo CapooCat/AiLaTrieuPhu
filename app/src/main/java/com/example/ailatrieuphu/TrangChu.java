@@ -89,8 +89,6 @@ public class TrangChu extends AppCompatActivity {
                         editor.clear();
                         editor.apply();
                         finish();
-                        Intent intent = new Intent (TrangChu.this, MainActivity.class);
-                        startActivity(intent);
                     }
                 })
                 .show();
