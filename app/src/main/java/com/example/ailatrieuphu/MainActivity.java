@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject(s);
                     boolean success = json.getBoolean("success");
                     if (success) {
-                        String token = "Bearer " + json.getString("token");
+                        String token = json.getString("token");
                         String credit = json.getString("credit");
                         String Username = TaiKhoan;
                         editor.putString("TOKEN", token);

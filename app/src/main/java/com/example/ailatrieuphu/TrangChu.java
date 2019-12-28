@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +69,8 @@ public class TrangChu extends AppCompatActivity {
     }
 
     public void LaunchLogin(View view) {
+        final String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
         new SweetAlertDialog(TrangChu.this, SweetAlertDialog.WARNING_TYPE)
 
                 .setTitleText("Bạn có chắc chắn muốn đăng xuất ?")
@@ -82,6 +85,10 @@ public class TrangChu extends AppCompatActivity {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismissWithAnimation();
+                        new DangXuatLoader().execute(token);
+                        editor.clear();
+                        editor.apply();
+                        finish();
                         Intent intent = new Intent (TrangChu.this, MainActivity.class);
                         startActivity(intent);
                     }

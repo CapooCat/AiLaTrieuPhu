@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
     private Button btn1;
@@ -28,6 +30,7 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     String ID1,ID2,ID3,ID4;
+    int Life,Diem,Cau;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,11 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         String User = sharedPreferences.getString("ten_dang_nhap", "");
         this.txtUsername.setText(User);
         this.txtCredit.setText(credit);
+
+        Intent intent = getIntent();
+        Life = intent.getIntExtra("Life", 3);
+        Diem = intent.getIntExtra("Diem", 0);
+        Cau = intent.getIntExtra("Cau", 1);
 
     }
 
@@ -94,6 +102,9 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         Intent intent = new Intent(this, CauHoi.class);
         String layID = ID1;
         intent.putExtra("ID", layID);
+        intent.putExtra("Life", Life);
+        intent.putExtra("Diem", Diem);
+        intent.putExtra("Cau", Cau);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
     }
@@ -102,6 +113,9 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         Intent intent = new Intent(this, CauHoi.class);
         String layID = ID2;
         intent.putExtra("ID", layID);
+        intent.putExtra("Life", Life);
+        intent.putExtra("Diem", Diem);
+        intent.putExtra("Cau", Cau);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
     }
@@ -110,6 +124,9 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         Intent intent = new Intent(this, CauHoi.class);
         String layID = ID3;
         intent.putExtra("ID", layID);
+        intent.putExtra("Life", Life);
+        intent.putExtra("Diem", Diem);
+        intent.putExtra("Cau", Cau);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
     }
@@ -118,12 +135,42 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         Intent intent = new Intent(this, CauHoi.class);
         String layID = ID4;
         intent.putExtra("ID", layID);
+        intent.putExtra("Life", Life);
+        intent.putExtra("Diem", Diem);
+        intent.putExtra("Cau", Cau);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(Diem>0)
+        {
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                new SweetAlertDialog(ChonLinhVuc.this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Thông báo")
+                        .setContentText("Bạn có chắc là muốn thoát ?? Điểm hiện tại của bạn là: "+Diem+" sẽ bị mất")
+                        .setCancelButton("không", new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.dismissWithAnimation();
+                            }
+                        })
+                        .setConfirmText("có")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                Intent intent = new Intent (ChonLinhVuc.this,TrangChu.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                            }
+                        })
+                        .show();
+                return true;
+            }
+
+            return super.onKeyDown(keyCode, event);
+        }
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent = new Intent(this, TrangChu.class);
             startActivity(intent);
