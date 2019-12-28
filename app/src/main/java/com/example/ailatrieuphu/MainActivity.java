@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         EditText txtPassword = findViewById(R.id.txtMatKhau);
 
         final String TaiKhoan = txtUsername.getText().toString();
-        String MatKhau = txtPassword.getText().toString();
+        final String MatKhau = txtPassword.getText().toString();
 
         new DangNhapLoader(){
             @Override
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                         editor.putString("credit", credit);
                         editor.putString("ten_dang_nhap", Username);
                         editor.putString("id", id);
+                        editor.putString("password", MatKhau);
                         editor.commit();
                         new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Đăng nhập thành công")
@@ -103,4 +104,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        }
 }

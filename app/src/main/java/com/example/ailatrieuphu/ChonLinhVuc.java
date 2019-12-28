@@ -106,7 +106,7 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         intent.putExtra("Diem", Diem);
         intent.putExtra("Cau", Cau);
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
+        overridePendingTransition(0, 0);
     }
     public void LaunchCauHoi2(View view) {
 
@@ -117,7 +117,7 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         intent.putExtra("Diem", Diem);
         intent.putExtra("Cau", Cau);
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
+        overridePendingTransition(0, 0);
     }
     public void LaunchCauHoi3(View view) {
 
@@ -128,7 +128,7 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         intent.putExtra("Diem", Diem);
         intent.putExtra("Cau", Cau);
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
+        overridePendingTransition(0, 0);
     }
     public void LaunchCauHoi4(View view) {
 
@@ -139,7 +139,7 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         intent.putExtra("Diem", Diem);
         intent.putExtra("Cau", Cau);
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
+        overridePendingTransition(0, 0);
     }
 
     @Override

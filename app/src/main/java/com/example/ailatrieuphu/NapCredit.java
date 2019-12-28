@@ -6,8 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -15,13 +17,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NapCredit extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+public class NapCredit extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>, View.OnClickListener {
     private Button btn100C;
     private Button btn500C;
     private Button btn1000C;
     private Button btn2500C;
     private Button btn5000C;
     private Button btn10000C;
+    String id1,id2,id3,id4,id5,id6;
+    String goi1,goi2,goi3,goi4,goi5,goi6;
+    String tien1,tien2,tien3,tien4,tien5,tien6;
     TextView txtCredit;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -46,6 +53,13 @@ public class NapCredit extends AppCompatActivity implements LoaderManager.Loader
         txtCredit = findViewById(R.id.lblSoDu);
         this.txtCredit.setText("Số dư trong tài khoản: " + credit );
 
+        btn100C.setOnClickListener(this);
+        btn500C.setOnClickListener(this);
+        btn1000C.setOnClickListener(this);
+        btn2500C.setOnClickListener(this);
+        btn5000C.setOnClickListener(this);
+        btn10000C.setOnClickListener(this);
+
     }
 
     @Override
@@ -68,16 +82,34 @@ public class NapCredit extends AppCompatActivity implements LoaderManager.Loader
             for (int i = 0; i < itemsArray.length(); i++) {
 
                 this.btn100C.setText(itemsArray.getJSONObject(i).getString("credit") + " CREDIT \n" +itemsArray.getJSONObject(i).getString("so_tien") + "VNĐ");
+                id1 = itemsArray.getJSONObject(i).getString("id");
+                goi1 = itemsArray.getJSONObject(i).getString("credit");
+                tien1 = itemsArray.getJSONObject(i).getString("so_tien");
                 i++;
                 this.btn500C.setText(itemsArray.getJSONObject(i).getString("credit") + " CREDIT \n" +itemsArray.getJSONObject(i).getString("so_tien") + "VNĐ");
+                id2 = itemsArray.getJSONObject(i).getString("id");
+                goi2 = itemsArray.getJSONObject(i).getString("credit");
+                tien2 = itemsArray.getJSONObject(i).getString("so_tien");
                 i++;
                 this.btn1000C.setText(itemsArray.getJSONObject(i).getString("credit") + " CREDIT \n" +itemsArray.getJSONObject(i).getString("so_tien") + "VNĐ");
+                id3 = itemsArray.getJSONObject(i).getString("id");
+                goi3 = itemsArray.getJSONObject(i).getString("credit");
+                tien3 = itemsArray.getJSONObject(i).getString("so_tien");
                 i++;
                 this.btn2500C.setText(itemsArray.getJSONObject(i).getString("credit") + " CREDIT \n" +itemsArray.getJSONObject(i).getString("so_tien") + "VNĐ");
+                id4 = itemsArray.getJSONObject(i).getString("id");
+                goi4 = itemsArray.getJSONObject(i).getString("credit");
+                tien4 = itemsArray.getJSONObject(i).getString("so_tien");
                 i++;
                 this.btn5000C.setText(itemsArray.getJSONObject(i).getString("credit") + " CREDIT \n" +itemsArray.getJSONObject(i).getString("so_tien") + "VNĐ");
+                id5 = itemsArray.getJSONObject(i).getString("id");
+                goi5 = itemsArray.getJSONObject(i).getString("credit");
+                tien5 = itemsArray.getJSONObject(i).getString("so_tien");
                 i++;
                 this.btn10000C.setText(itemsArray.getJSONObject(i).getString("credit") + " CREDIT \n" +itemsArray.getJSONObject(i).getString("so_tien") + "VNĐ");
+                id6 = itemsArray.getJSONObject(i).getString("id");
+                goi6 = itemsArray.getJSONObject(i).getString("credit");
+                tien6 = itemsArray.getJSONObject(i).getString("so_tien");
             }
 
         } catch (JSONException e) {
@@ -90,4 +122,110 @@ public class NapCredit extends AppCompatActivity implements LoaderManager.Loader
     public void onLoaderReset(@NonNull Loader<String> loader) {
 
     }
+
+    public void Confirm(final String id,String goi, String tien)
+    {
+        final String User = sharedPreferences.getString("ten_dang_nhap", "");
+        final String Password = sharedPreferences.getString("password", "");
+        final String NguoiChoi = sharedPreferences.getString("id", "");
+        new SweetAlertDialog(NapCredit.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Thông báo")
+                .setContentText("Bạn có chắc là nạp gói "+goi+" với giá tiền: "+tien+" VNĐ ?")
+                .setCancelButton("không", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .setConfirmText("có")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        new NapCreditLoader(){
+                            @Override
+                            protected void onPostExecute(String s) {
+                                try {
+                                    JSONObject json = new JSONObject(s);
+                                    boolean success = json.getBoolean("success");
+                                    String msg = json.getString("msg");
+                                    if (success) {
+                                        new DangNhapLoader(){
+                                            @Override
+                                            protected void onPostExecute(String s) {
+                                                try {
+                                                    JSONObject json = new JSONObject(s);
+                                                        String credit = json.getString("credit");
+                                                        String token = json.getString("token");
+                                                        new DangXuatLoader().execute(token) ;
+                                                        editor.remove("credit");
+                                                        editor.putString("credit", credit);
+                                                        editor.commit();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        }.execute(User,Password);
+                                        new SweetAlertDialog(NapCredit.this, SweetAlertDialog.SUCCESS_TYPE)
+                                                .setTitleText(msg)
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.dismissWithAnimation();
+                                                        String credit = sharedPreferences.getString("credit", "");
+                                                        txtCredit = findViewById(R.id.lblSoDu);
+                                                        txtCredit.setText("Số dư trong tài khoản: " + credit );
+                                                    }
+                                                })
+                                                .show();
+                                    } else {
+                                        new SweetAlertDialog(NapCredit.this, SweetAlertDialog.ERROR_TYPE)
+                                                .setTitleText(msg)
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.dismissWithAnimation();
+
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }.execute(NguoiChoi,id);
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
+    }
+
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn100:
+                Confirm(id1,goi1,tien1);break;
+            case R.id.btn500:
+                Confirm(id2,goi2,tien2);break;
+            case R.id.btn1000:
+                Confirm(id3,goi3,tien3);break;
+            case R.id.btn2500:
+                Confirm(id4,goi4,tien4);break;
+            case R.id.btn5000:
+                Confirm(id5,goi5,tien5);break;
+            case R.id.btn10000:
+                Confirm(id6,goi6,tien6);break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent (NapCredit.this, TrangChu.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
+        }
 }

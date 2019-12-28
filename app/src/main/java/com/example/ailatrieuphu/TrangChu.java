@@ -50,9 +50,9 @@ public class TrangChu extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 
@@ -88,7 +88,8 @@ public class TrangChu extends AppCompatActivity {
                         new DangXuatLoader().execute(token);
                         editor.clear();
                         editor.apply();
-                        finish();
+                        Intent intent = new Intent (TrangChu.this, MainActivity.class);
+                        startActivity(intent);
                     }
                 })
                 .show();

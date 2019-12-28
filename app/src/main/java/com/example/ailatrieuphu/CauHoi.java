@@ -170,7 +170,7 @@ public class CauHoi extends AppCompatActivity {
                                     intent.putExtra("Life", Life);
                                     intent.putExtra("Cau", Cau);
                                     startActivity(intent);
-                                    overridePendingTransition(R.anim.slide_right, R.anim.slide_out_left);
+                                    overridePendingTransition(0, 0);
                                 }
                             })
                             .show();
@@ -210,7 +210,7 @@ public class CauHoi extends AppCompatActivity {
                         mTimeLeftInMillis = START_TIME_IN_MILLIS;
                         Intent intent = new Intent (CauHoi.this,ChonLinhVuc.class);
                         startActivity(intent);
-                        overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                        overridePendingTransition(0, 0);
                     }
                 })
                 .show();
@@ -389,7 +389,7 @@ public class CauHoi extends AppCompatActivity {
                         intent.putExtra("Life", Life);
                         intent.putExtra("Cau", Cau);
                         startActivity(intent);
-                        overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                        overridePendingTransition(0, 0);
                     }
                 })
                 .show();
@@ -435,7 +435,7 @@ public class CauHoi extends AppCompatActivity {
                             intent.putExtra("Life", Life);
                             intent.putExtra("Cau", Cau);
                             startActivity(intent);
-                            overridePendingTransition(R.anim.slide_right, R.anim.slide_out_left);
+                            overridePendingTransition(0, 0);
                         }
                     })
                     .show();
