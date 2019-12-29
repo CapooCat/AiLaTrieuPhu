@@ -2,6 +2,7 @@ package com.example.ailatrieuphu;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -163,6 +164,7 @@ public class ThongTinXepHangMain extends AppCompatActivity implements LoaderMana
 
     @Override
     public void finish(){
+        mListThongTinXepHang.clear();
         super.finish();
         overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
     }
