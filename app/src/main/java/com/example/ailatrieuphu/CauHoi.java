@@ -15,6 +15,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.renderscript.Sampler;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
@@ -84,6 +85,12 @@ public class CauHoi extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token == "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
         String credit = sharedPreferences.getString("credit", "");
         this.txtCredit.setText(credit);
 

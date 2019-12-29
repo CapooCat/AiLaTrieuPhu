@@ -9,6 +9,7 @@ import androidx.loader.content.Loader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -48,6 +49,12 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         txtCredit = findViewById(R.id.TienCredit);
         sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token == "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
         String credit = sharedPreferences.getString("credit", "");
         String User = sharedPreferences.getString("ten_dang_nhap", "");
         this.txtUsername.setText(User);
