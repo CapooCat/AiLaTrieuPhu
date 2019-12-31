@@ -2,11 +2,11 @@ package com.example.ailatrieuphu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -33,17 +33,29 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences(FILE_NAME_SHAREREF, MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token != "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
     }
 
-    public void launchActivityMenu() { Intent intent = new Intent(this, TrangChu.class);
+    public void launchActivityMenu() {
+        Intent intent = new Intent(this, TrangChu.class);
         startActivity(intent); }
 
     public void LaunchTrangChu(View view) {
         EditText txtUsername = findViewById(R.id.txtTaiKhoan);
         EditText txtPassword = findViewById(R.id.txtMatKhau);
 
-        String TaiKhoan = txtUsername.getText().toString();
-        String MatKhau = txtPassword.getText().toString();
+        final String TaiKhoan = txtUsername.getText().toString();
+        final String MatKhau = txtPassword.getText().toString();
+        final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        pDialog.show();
 
         new DangNhapLoader(){
             @Override
@@ -52,16 +64,35 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject(s);
                     boolean success = json.getBoolean("success");
                     if (success) {
-                        String token = "Bearer " + json.getString("token");
+                        pDialog.dismissWithAnimation();
+                        String token = json.getString("token");
+                        String credit = json.getString("credit");
+                        String Username = json.getString("ten_dang_nhap");
+                        String id = json.getString("id");
+                        String Email = json.getString("email");
                         editor.putString("TOKEN", token);
+                        editor.putString("credit", credit);
+                        editor.putString("ten_dang_nhap", Username);
+                        editor.putString("id", id);
+                        editor.putString("email", Email);
+                        editor.putString("password", MatKhau);
                         editor.commit();
-                        launchActivityMenu();
+                        new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Đăng nhập thành công")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        sweetAlertDialog.dismissWithAnimation();
+                                        launchActivityMenu();
+                                    }
+                                })
+                                .show();
                     } else {
-                        String msg = json.getString("msg");
                         new SweetAlertDialog(MainActivity.this, SweetAlertDialog.ERROR_TYPE)
                         .setTitleText("Đăng nhập thất bại")
                         .setContentText("Sai tài khoản hoặc mật khẩu, vui lòng nhập lại")
                         .show();
+                        pDialog.dismissWithAnimation();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -70,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }.execute(TaiKhoan, MatKhau);
     }
+
 
     public void LaunchForget(View view) {
         Intent intent = new Intent(this, Forget.class);
@@ -82,4 +114,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        }
 }

@@ -8,11 +8,14 @@ import androidx.core.content.ContextCompat;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.renderscript.Sampler;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,6 +33,9 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -40,6 +46,19 @@ import java.util.Random;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class CauHoi extends AppCompatActivity {
+    Button btn1;
+    Button btn2;
+    Button btn3;
+    Button btn4;
+    TextView NoiDung,txtCredit,txtLife,txtDiem;
+    Button BtnCau;
+    int DapAn;
+    int Life = 3;
+    int Diem = 0;
+    int Cau = 1;
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     private static final long START_TIME_IN_MILLIS= 30000;
 
@@ -53,6 +72,57 @@ public class CauHoi extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cau_hoi);
+
+        this.btn1= findViewById(R.id.btnTraLoi1);
+        this.btn2= findViewById(R.id.btnTraLoi2);
+        this.btn3= findViewById(R.id.btnTraLoi3);
+        this.btn4= findViewById(R.id.btnTraLoi4);
+        txtDiem = findViewById(R.id.txtDiem);
+        BtnCau = findViewById(R.id.btnSoCau);
+        txtCredit = findViewById(R.id.TienNap);
+        NoiDung = findViewById(R.id.txtNoiDung);
+        txtLife = findViewById(R.id.txtLife);
+
+        sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token == "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
+        String credit = sharedPreferences.getString("credit", "");
+        this.txtCredit.setText(credit);
+
+        Intent intent = getIntent();
+        String ID = intent.getStringExtra("ID");
+        Life = intent.getIntExtra("Life", 3);
+        Diem = intent.getIntExtra("Diem", 0);
+        Cau = intent.getIntExtra("Cau", 1);
+
+        String D = String.valueOf(Diem);
+        txtDiem.setText("Điểm: "+D);
+        BtnCau.setText(String.valueOf(Cau));
+        txtLife.setText(String.valueOf(Life));
+
+
+        new CauHoiLoader(){
+            @Override
+            protected void onPostExecute(String a) {
+                try {
+                    JSONObject json = new JSONObject(a);
+                    JSONArray item = json.getJSONArray("dsCauHoi");
+                    NoiDung.setText(item.getJSONObject(0).getString("noi_dung"));
+                    btn1.setText(item.getJSONObject(0).getString("phuong_an_a"));
+                    btn2.setText(item.getJSONObject(0).getString("phuong_an_b"));
+                    btn3.setText(item.getJSONObject(0).getString("phuong_an_c"));
+                    btn4.setText(item.getJSONObject(0).getString("phuong_an_d"));
+                    DapAn = item.getJSONObject(0).getInt("dap_an");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.execute(ID);
 
 
         Button mShowDialog = findViewById(R.id.btnTroGiup);
@@ -90,26 +160,28 @@ public class CauHoi extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                new SweetAlertDialog(CauHoi.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Đã hết giờ")
-                        .setCancelButton("tiếp tục", new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.dismissWithAnimation();
-                                Intent intent = new Intent (CauHoi.this, ChonLinhVuc.class);
-                                startActivity(intent);
-                            }
-                        })
-                        .setConfirmText("thoát")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.dismissWithAnimation();
-                                Intent intent = new Intent (CauHoi.this, TrangChu.class);
-                                startActivity(intent);
-                            }
-                        })
-                        .show();
+                if (Life == 0) {
+                    inCorrect();
+                } else {
+                    new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Đã hết giờ")
+                            .setConfirmText("Tiếp theo")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    sweetAlertDialog.dismissWithAnimation();
+                                    Cau = Cau + 1;
+                                    Life = Life - 1;
+                                    Intent intent = new Intent(CauHoi.this, ChonLinhVuc.class);
+                                    intent.putExtra("Diem", Diem);
+                                    intent.putExtra("Life", Life);
+                                    intent.putExtra("Cau", Cau);
+                                    startActivity(intent);
+                                    overridePendingTransition(0, 0);
+                                }
+                            })
+                            .show();
+            }
             }
         }.start();
 
@@ -127,20 +199,37 @@ public class CauHoi extends AppCompatActivity {
     }
 
     public void Reset(View view) {
-        mCountDownTimer.cancel();
-        mTimerRunning = false;
-        mTimeLeftInMillis = START_TIME_IN_MILLIS;
-        Intent intent = new Intent (this,ChonLinhVuc.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Thông báo")
+                .setContentText("Bạn có chắc là muốn Reset ?? điểm của bạn sẽ mất")
+                .setCancelButton("không", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .setConfirmText("có")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        mCountDownTimer.cancel();
+                        mTimerRunning = false;
+                        mTimeLeftInMillis = START_TIME_IN_MILLIS;
+                        Intent intent = new Intent (CauHoi.this,ChonLinhVuc.class);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                })
+                .show();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        final String NguoiChoi = sharedPreferences.getString("id", "");
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             new SweetAlertDialog(CauHoi.this, SweetAlertDialog.WARNING_TYPE)
                     .setTitleText("Thông báo")
-                    .setContentText("Bạn có chắc là muốn thoát ?? điểm của bạn sẽ mất")
+                    .setContentText("Bạn có chắc là muốn thoát ??")
                     .setCancelButton("không", new SweetAlertDialog.OnSweetClickListener() {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
@@ -154,6 +243,7 @@ public class CauHoi extends AppCompatActivity {
                             mCountDownTimer.cancel();
                             mTimerRunning = false;
                             mTimeLeftInMillis = START_TIME_IN_MILLIS;
+                            new UpdateDiem().execute(NguoiChoi,String.valueOf(Diem));
                             Intent intent = new Intent (CauHoi.this,TrangChu.class);
                             startActivity(intent);
                             overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
@@ -259,19 +349,19 @@ public class CauHoi extends AppCompatActivity {
 
 
 
-        if( name[index] == "A")
+        if(name[index] == "a")
         {
             mCauTraLoi.setTextColor(getResources().getColor(android.R.color.holo_orange_light));
         }
-        if(name[index] == "B")
+        if(name[index] == "b")
         {
             mCauTraLoi.setTextColor(getResources().getColor(android.R.color.holo_blue_light));
         }
-        if(name[index] == "C")
+        if(name[index] == "c")
         {
             mCauTraLoi.setTextColor(getResources().getColor(android.R.color.holo_green_light));
         }
-        if(name[index] == "D")
+        if(name[index] == "d")
         {
             mCauTraLoi.setTextColor(getResources().getColor(android.R.color.holo_red_light));
         }
@@ -287,8 +377,274 @@ public class CauHoi extends AppCompatActivity {
         return dataVals;
     }
 
-    public void Correct(View view) {
-        view.setBackgroundResource(R.drawable.buttonstyle4);
+    public void Correct()
+    {
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        mTimeLeftInMillis = START_TIME_IN_MILLIS;
+        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Bạn đã trả lời chính xác")
+                .setConfirmText("tiếp tục")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                        Diem = Diem + 200;
+                        Cau = Cau + 1;
+                        Intent intent = new Intent (CauHoi.this,ChonLinhVuc.class);
+                        intent.putExtra("Diem", Diem);
+                        intent.putExtra("Life", Life);
+                        intent.putExtra("Cau", Cau);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                    }
+                })
+                .show();
     }
 
+    public void inCorrect()
+    {
+        final String NguoiChoi = sharedPreferences.getString("id", "");
+        if(Life == 0)
+        {
+            mCountDownTimer.cancel();
+            mTimerRunning = false;
+            mTimeLeftInMillis = START_TIME_IN_MILLIS;
+            new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Bạn đã thua, chúc bạn may mắn lần sau")
+                    .setConfirmText("tiếp tục")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismissWithAnimation();
+                            new UpdateDiem(){
+                                @Override
+                                protected void onPostExecute(String s) {
+                                    try {
+                                        JSONObject json = new JSONObject(s);
+                                        boolean success = json.getBoolean("success");
+                                        if (success) {
+                                            new SweetAlertDialog(CauHoi.this, SweetAlertDialog.SUCCESS_TYPE)
+                                                    .setTitleText("Chúc mừng bạn đã đạt được kỉ lục mới")
+                                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            Intent intent = new Intent (CauHoi.this,TrangChu.class);
+                                                            startActivity(intent);
+                                                            overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                                                        }
+                                                    })
+                                                    .show();
+                                        } else {
+                                            Intent intent = new Intent (CauHoi.this,TrangChu.class);
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }.execute(NguoiChoi,String.valueOf(Diem));
+                        }
+                    })
+                    .show();
+        } else {
+            mCountDownTimer.cancel();
+            mTimerRunning = false;
+            mTimeLeftInMillis = START_TIME_IN_MILLIS;
+            new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Bạn đã trả lời sai")
+                    .setConfirmText("tiếp tục")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismissWithAnimation();
+                            Cau = Cau + 1;
+                            Life = Life - 1;
+                            Intent intent = new Intent(CauHoi.this, ChonLinhVuc.class);
+                            intent.putExtra("Diem", Diem);
+                            intent.putExtra("Life", Life);
+                            intent.putExtra("Cau", Cau);
+                            startActivity(intent);
+                            overridePendingTransition(0, 0);
+                        }
+                    })
+                    .show();
+        }
+    }
+
+    public void TraLoiA(View view) {
+        if (DapAn == 1) {
+            view.setBackgroundResource(R.drawable.buttonstyle4);
+            Correct();
+        }
+        if (DapAn == 2)
+            btn2.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 3)
+            btn3.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 4)
+            btn4.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn != 1) {
+            view.setBackgroundResource(R.drawable.buttonstyle5);
+            inCorrect();
+        }
+
+    }
+    public void TraLoiB(View view) {
+        if (DapAn == 2) {
+            view.setBackgroundResource(R.drawable.buttonstyle4);
+            Correct();
+        }
+        if (DapAn == 1)
+            btn1.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 3)
+            btn3.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 4)
+            btn4.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn != 2){
+            view.setBackgroundResource(R.drawable.buttonstyle5);
+            inCorrect();
+        }
+
+    }
+    public void TraLoiC(View view) {
+        if (DapAn == 3) {
+            view.setBackgroundResource(R.drawable.buttonstyle4);
+            Correct();
+        }
+        if (DapAn == 1)
+            btn1.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 2)
+            btn2.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 4)
+            btn4.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn != 3){
+            view.setBackgroundResource(R.drawable.buttonstyle5);
+            inCorrect();
+        }
+    }
+    public void TraLoiD(View view) {
+        if (DapAn == 4) {
+            view.setBackgroundResource(R.drawable.buttonstyle4);
+            Correct();
+        }
+        if (DapAn == 1)
+            btn1.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 2)
+            btn2.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn == 3)
+            btn3.setBackgroundResource(R.drawable.buttonstyle4);
+        if (DapAn != 4){
+            view.setBackgroundResource(R.drawable.buttonstyle5);
+            inCorrect();
+        }
+
+    }
+
+    public void LoaiBo(final View view) {
+        final String User = sharedPreferences.getString("ten_dang_nhap", "");
+        final String Password = sharedPreferences.getString("password", "");
+        final String NguoiChoi = sharedPreferences.getString("id", "");
+        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Thông báo")
+                .setContentText("Việc loại bỏ đáp án sẽ tốn 1000 Credit bạn có chắc chứ ?")
+                .setCancelButton("không", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .setConfirmText("có")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        new TruCredit(){
+                            @Override
+                            protected void onPostExecute(String s) {
+                                try {
+                                    JSONObject json = new JSONObject(s);
+                                    boolean success = json.getBoolean("success");
+                                    String msg = json.getString("msg");
+                                    if (success) {
+                                        new DangNhapLoader(){
+                                            @Override
+                                            protected void onPostExecute(String s) {
+                                                try {
+                                                    JSONObject json = new JSONObject(s);
+                                                    String credit = json.getString("credit");
+                                                    String token = json.getString("token");
+                                                    new DangXuatLoader().execute(token) ;
+                                                    editor.remove("credit");
+                                                    editor.putString("credit", credit);
+                                                    editor.commit();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        }.execute(User,Password);
+                                        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.SUCCESS_TYPE)
+                                                .setTitleText(msg)
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.dismissWithAnimation();
+                                                        String credit = sharedPreferences.getString("credit", "");
+                                                        txtCredit = findViewById(R.id.TienNap);
+                                                        txtCredit.setText(credit);
+                                                        int i=0;
+                                                        boolean A=false;
+                                                        boolean B=false;
+                                                        boolean C=false;
+                                                        boolean D=false;
+                                                        while(i<2) {
+                                                            final int random = new Random().nextInt((4 - 1) + 1) + 1;
+                                                            if (random == 1 && DapAn != 1 && A==false) {
+                                                                btn1.setBackgroundResource(R.drawable.buttonstyle5);
+                                                                A = true;
+                                                                i++;
+                                                            } else if (random == 2 && DapAn != 2 && B==false) {
+                                                                btn2.setBackgroundResource(R.drawable.buttonstyle5);
+                                                                B = true;
+                                                                i++;
+                                                            } else if (random == 3 && DapAn != 3 && C==false) {
+                                                                btn3.setBackgroundResource(R.drawable.buttonstyle5);
+                                                                C = true;
+                                                                i++;
+                                                            } else if (random == 4 && DapAn != 4 && D==false) {
+                                                                btn4.setBackgroundResource(R.drawable.buttonstyle5);
+                                                                D = true;
+                                                                i++;
+                                                            }
+                                                            if(i==2)
+                                                                view.setEnabled(false);
+                                                        }
+                                                    }
+                                                })
+                                                .show();
+                                    } else {
+                                        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
+                                                .setTitleText(msg)
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.dismissWithAnimation();
+
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }.execute(NguoiChoi,"1000");
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
+
+    }
 }

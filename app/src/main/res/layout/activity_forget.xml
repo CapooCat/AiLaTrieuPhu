@@ -17,12 +17,13 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
-        android:text="Đổi mật khẩu"
+        android:text="Lấy mật khẩu"
+        android:onClick="GetPassword"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTaiKhoan2" />
+        app:layout_constraintTop_toBottomOf="@+id/txtUsername2" />
 
     <TextView
         android:id="@+id/textView3"
@@ -32,12 +33,12 @@
         android:text="Đổi mật khẩu"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtTaiKhoan2"
+        app:layout_constraintBottom_toTopOf="@+id/txtUsername2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/txtTaiKhoan2"
+        android:id="@+id/txtUsername2"
         style="@style/editText_style"
         android:layout_width="0dp"
         android:layout_height="50sp"
@@ -46,7 +47,7 @@
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
         android:layout_marginBottom="100dp"
-        android:hint="Email"
+        android:hint="Tài khoản"
         android:inputType="textPersonName"
         android:singleLine="true"
         android:textSize="18sp"

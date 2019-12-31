@@ -29,4 +29,20 @@
     <style name="button_correct">
         <item name="android:background">@drawable/buttonstyle4</item>
     </style>
+
+    <style name="button_wrong">
+        <item name="android:background">@drawable/buttonstyle5</item>
+    </style>
+
+    <style name="button_first">
+        <item name="android:background">@drawable/buttonstyle6</item>
+    </style>
+
+    <style name="button_second">
+        <item name="android:background">@drawable/buttonstyle7</item>
+    </style>
+
+    <style name="button_third">
+        <item name="android:background">@drawable/buttonstyle8</item>
+    </style>
 </resources>
