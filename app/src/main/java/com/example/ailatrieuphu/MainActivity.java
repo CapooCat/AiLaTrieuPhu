@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
 
         final String TaiKhoan = txtUsername.getText().toString();
         final String MatKhau = txtPassword.getText().toString();
+        final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        pDialog.show();
 
         new DangNhapLoader(){
             @Override
@@ -58,14 +64,17 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject(s);
                     boolean success = json.getBoolean("success");
                     if (success) {
+                        pDialog.dismissWithAnimation();
                         String token = json.getString("token");
                         String credit = json.getString("credit");
                         String Username = json.getString("ten_dang_nhap");
                         String id = json.getString("id");
+                        String Email = json.getString("email");
                         editor.putString("TOKEN", token);
                         editor.putString("credit", credit);
                         editor.putString("ten_dang_nhap", Username);
                         editor.putString("id", id);
+                        editor.putString("email", Email);
                         editor.putString("password", MatKhau);
                         editor.commit();
                         new SweetAlertDialog(MainActivity.this, SweetAlertDialog.SUCCESS_TYPE)
@@ -83,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                         .setTitleText("Đăng nhập thất bại")
                         .setContentText("Sai tài khoản hoặc mật khẩu, vui lòng nhập lại")
                         .show();
+                        pDialog.dismissWithAnimation();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

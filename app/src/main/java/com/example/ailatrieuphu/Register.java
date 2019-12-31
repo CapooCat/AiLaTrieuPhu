@@ -29,7 +29,7 @@ public class Register extends AppCompatActivity {
 
     public void DangKy(View view) {
         EditText txtUser,Email,txtPassword,txtReEnter;
-        txtUser = findViewById(R.id.txtTenTaiKhoan);
+        txtUser = findViewById(R.id.txtSuaTaiKhoan);
         Email = findViewById(R.id.txtEmail);
         txtPassword = findViewById(R.id.txtMatKhau);
         txtReEnter = findViewById(R.id.txtNhapLai);
