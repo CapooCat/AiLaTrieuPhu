@@ -1,4 +1,4 @@
-﻿package com.example.ailatrieuphu;
+package com.example.ailatrieuphu;
 
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
@@ -407,6 +407,8 @@ public class CauHoi extends AppCompatActivity {
         final String NguoiChoi = sharedPreferences.getString("id", "");
         if(Life == 1)
         {
+            Life = 0;
+            txtLife.setText(String.valueOf(Life));
             mCountDownTimer.cancel();
             mTimerRunning = false;
             mTimeLeftInMillis = START_TIME_IN_MILLIS;
@@ -424,7 +426,6 @@ public class CauHoi extends AppCompatActivity {
                                         JSONObject json = new JSONObject(s);
                                         boolean success = json.getBoolean("success");
                                         if (success) {
-					    txtLife.setText(String.valueOf(Life));
                                             new SweetAlertDialog(CauHoi.this, SweetAlertDialog.SUCCESS_TYPE)
                                                     .setTitleText("Chúc mừng bạn đã đạt được kỉ lục mới")
                                                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
