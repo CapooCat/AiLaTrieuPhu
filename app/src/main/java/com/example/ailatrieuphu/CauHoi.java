@@ -1,4 +1,4 @@
-package com.example.ailatrieuphu;
+﻿package com.example.ailatrieuphu;
 
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.AlertDialog;
@@ -424,6 +424,7 @@ public class CauHoi extends AppCompatActivity {
                                         JSONObject json = new JSONObject(s);
                                         boolean success = json.getBoolean("success");
                                         if (success) {
+					    txtLife.setText(String.valueOf(Life));
                                             new SweetAlertDialog(CauHoi.this, SweetAlertDialog.SUCCESS_TYPE)
                                                     .setTitleText("Chúc mừng bạn đã đạt được kỉ lục mới")
                                                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
