@@ -59,9 +59,10 @@ public class ThongTinCaNhan extends AppCompatActivity {
         String Email = SuaEmail.getText().toString();
         String MatKhau = SuaMatKhau.getText().toString();
         String NhapLaiMK = NhapLaiMatKhau.getText().toString();
+        String Check = "";
         String id = sharedPreferences.getString("id", "");
 
-        if(MatKhau == "" && NhapLaiMK == "")
+        if(MatKhau.equals(Check) && NhapLaiMK.equals(Check))
         {
             MatKhau =sharedPreferences.getString("password", "");
             NhapLaiMK = sharedPreferences.getString("password", "");
@@ -69,7 +70,7 @@ public class ThongTinCaNhan extends AppCompatActivity {
         }
         final String MK = MatKhau;
 
-        if (MatKhau != "" && NhapLaiMK !="" && MatKhau.equals(NhapLaiMK) && isEmailValid(Email) == true) {
+        if (!MatKhau.equals(Check) && !NhapLaiMK.equals(Check) && MatKhau.equals(NhapLaiMK) && isEmailValid(Email) == true) {
             new SuaThongTinLoader().execute(TaiKhoan, Email, MatKhau, id);
             new SweetAlertDialog(ThongTinCaNhan.this, SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("Sửa thành công")

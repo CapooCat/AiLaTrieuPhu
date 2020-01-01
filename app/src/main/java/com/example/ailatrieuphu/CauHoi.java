@@ -405,7 +405,7 @@ public class CauHoi extends AppCompatActivity {
     public void inCorrect()
     {
         final String NguoiChoi = sharedPreferences.getString("id", "");
-        if(Life == 0)
+        if(Life == 1)
         {
             mCountDownTimer.cancel();
             mTimerRunning = false;
