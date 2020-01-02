@@ -82,16 +82,16 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
                 for (int i = 0; i < itemsArray.length(); i++) {
 
                     this.btn1.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                    ID1= itemsArray.getJSONObject(i).getString("linh_vuc_id");
+                    ID1= itemsArray.getJSONObject(i).getString("id");
                     i++;
                     this.btn2.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                    ID2= itemsArray.getJSONObject(i).getString("linh_vuc_id");
+                    ID2= itemsArray.getJSONObject(i).getString("id");
                     i++;
                     this.btn3.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                    ID3= itemsArray.getJSONObject(i).getString("linh_vuc_id");
+                    ID3= itemsArray.getJSONObject(i).getString("id");
                     i++;
                     this.btn4.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                    ID4= itemsArray.getJSONObject(i).getString("linh_vuc_id");
+                    ID4= itemsArray.getJSONObject(i).getString("id");
             }
 
         } catch (JSONException e) {

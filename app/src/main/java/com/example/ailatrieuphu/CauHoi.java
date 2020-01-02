@@ -405,8 +405,10 @@ public class CauHoi extends AppCompatActivity {
     public void inCorrect()
     {
         final String NguoiChoi = sharedPreferences.getString("id", "");
-        if(Life == 0)
+        if(Life == 1)
         {
+            Life = 0;
+            txtLife.setText(String.valueOf(Life));
             mCountDownTimer.cancel();
             mTimerRunning = false;
             mTimeLeftInMillis = START_TIME_IN_MILLIS;
