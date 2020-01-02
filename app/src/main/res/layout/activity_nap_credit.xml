@@ -39,7 +39,6 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="80dp"
         android:drawableTop="@drawable/gold"
-        android:text="100 Credit &#10;20.000VNĐ"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -53,7 +52,6 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="32dp"
         android:drawableTop="@drawable/gold"
-        android:text="1000 Credit &#10;180.000VNĐ"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +66,6 @@
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
         android:drawableTop="@drawable/gold"
-        android:text="2500 Credit &#10;500.000VNĐ"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn500" />
@@ -82,7 +79,6 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="32dp"
         android:drawableTop="@drawable/gold"
-        android:text="5000 Credit &#10;950.000VNĐ"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn1000" />
@@ -97,7 +93,6 @@
         android:layout_marginRight="40dp"
         android:drawableTop="@drawable/gold"
         android:gravity="center"
-        android:text="10000 Credit &#10; 1.900.000VNĐ"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn2500" />
@@ -111,7 +106,6 @@
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
         android:drawableTop="@drawable/gold"
-        android:text="500 Credit &#10;90.000VNĐ"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -2,9 +2,12 @@ package com.example.ailatrieuphu;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -31,11 +34,21 @@ public class ThongTinXepHangMain extends AppCompatActivity implements LoaderMana
     private boolean isLastPage = false;
     private int totalPage;
     private boolean isLoading = false;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thong_tin_xep_hang_main);
+        sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token == "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
 
         this.mRecyclerView = findViewById(R.id.rcv_xep_hang);
         this.thongTinXepHangAdapter = new ThongTinXepHangAdapter(this, mListThongTinXepHang);
@@ -163,6 +176,7 @@ public class ThongTinXepHangMain extends AppCompatActivity implements LoaderMana
 
     @Override
     public void finish(){
+        mListThongTinXepHang.clear();
         super.finish();
         overridePendingTransition(R.anim.slide_left,R.anim.slide_out_right);
     }

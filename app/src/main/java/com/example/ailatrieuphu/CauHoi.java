@@ -15,6 +15,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.renderscript.Sampler;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
@@ -84,6 +85,12 @@ public class CauHoi extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token == "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
         String credit = sharedPreferences.getString("credit", "");
         this.txtCredit.setText(credit);
 
@@ -398,8 +405,10 @@ public class CauHoi extends AppCompatActivity {
     public void inCorrect()
     {
         final String NguoiChoi = sharedPreferences.getString("id", "");
-        if(Life == 0)
+        if(Life == 1)
         {
+            Life = 0;
+            txtLife.setText(String.valueOf(Life));
             mCountDownTimer.cancel();
             mTimerRunning = false;
             mTimeLeftInMillis = START_TIME_IN_MILLIS;
@@ -410,10 +419,35 @@ public class CauHoi extends AppCompatActivity {
                         @Override
                         public void onClick(SweetAlertDialog sweetAlertDialog) {
                             sweetAlertDialog.dismissWithAnimation();
-                            new UpdateDiem().execute(NguoiChoi,String.valueOf(Diem));
-                            Intent intent = new Intent (CauHoi.this,TrangChu.class);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                            new UpdateDiem(){
+                                @Override
+                                protected void onPostExecute(String s) {
+                                    try {
+                                        JSONObject json = new JSONObject(s);
+                                        boolean success = json.getBoolean("success");
+                                        if (success) {
+                                            new SweetAlertDialog(CauHoi.this, SweetAlertDialog.SUCCESS_TYPE)
+                                                    .setTitleText("Chúc mừng bạn đã đạt được kỉ lục mới")
+                                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                        @Override
+                                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                            sweetAlertDialog.dismissWithAnimation();
+                                                            Intent intent = new Intent (CauHoi.this,TrangChu.class);
+                                                            startActivity(intent);
+                                                            overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                                                        }
+                                                    })
+                                                    .show();
+                                        } else {
+                                            Intent intent = new Intent (CauHoi.this,TrangChu.class);
+                                            startActivity(intent);
+                                            overridePendingTransition(R.anim.slide_right,R.anim.slide_out_left);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }.execute(NguoiChoi,String.valueOf(Diem));
                         }
                     })
                     .show();
@@ -510,34 +544,109 @@ public class CauHoi extends AppCompatActivity {
 
     }
 
-    public void LoaiBo(View view) {
-        int i=0;
-        boolean A=false;
-        boolean B=false;
-        boolean C=false;
-        boolean D=false;
-        while(i<2) {
-            final int random = new Random().nextInt((4 - 1) + 1) + 1;
-            if (random == 1 && DapAn != 1 && A==false) {
-                btn1.setBackgroundResource(R.drawable.buttonstyle5);
-                A = true;
-                i++;
-            } else if (random == 2 && DapAn != 2 && B==false) {
-                btn2.setBackgroundResource(R.drawable.buttonstyle5);
-                B = true;
-                i++;
-            } else if (random == 3 && DapAn != 3 && C==false) {
-                btn3.setBackgroundResource(R.drawable.buttonstyle5);
-                C = true;
-                i++;
-            } else if (random == 4 && DapAn != 4 && D==false) {
-                btn4.setBackgroundResource(R.drawable.buttonstyle5);
-                D = true;
-                i++;
-            }
-            if(i==2)
-                view.setEnabled(false);
-        }
+    public void LoaiBo(final View view) {
+        final String User = sharedPreferences.getString("ten_dang_nhap", "");
+        final String Password = sharedPreferences.getString("password", "");
+        final String NguoiChoi = sharedPreferences.getString("id", "");
+        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Thông báo")
+                .setContentText("Việc loại bỏ đáp án sẽ tốn 1000 Credit bạn có chắc chứ ?")
+                .setCancelButton("không", new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .setConfirmText("có")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        new TruCredit(){
+                            @Override
+                            protected void onPostExecute(String s) {
+                                try {
+                                    JSONObject json = new JSONObject(s);
+                                    boolean success = json.getBoolean("success");
+                                    String msg = json.getString("msg");
+                                    if (success) {
+                                        new DangNhapLoader(){
+                                            @Override
+                                            protected void onPostExecute(String s) {
+                                                try {
+                                                    JSONObject json = new JSONObject(s);
+                                                    String credit = json.getString("credit");
+                                                    String token = json.getString("token");
+                                                    new DangXuatLoader().execute(token) ;
+                                                    editor.remove("credit");
+                                                    editor.putString("credit", credit);
+                                                    editor.commit();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+                                        }.execute(User,Password);
+                                        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.SUCCESS_TYPE)
+                                                .setTitleText(msg)
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.dismissWithAnimation();
+                                                        String credit = sharedPreferences.getString("credit", "");
+                                                        txtCredit = findViewById(R.id.TienNap);
+                                                        txtCredit.setText(credit);
+                                                        int i=0;
+                                                        boolean A=false;
+                                                        boolean B=false;
+                                                        boolean C=false;
+                                                        boolean D=false;
+                                                        while(i<2) {
+                                                            final int random = new Random().nextInt((4 - 1) + 1) + 1;
+                                                            if (random == 1 && DapAn != 1 && A==false) {
+                                                                btn1.setBackgroundResource(R.drawable.buttonstyle5);
+                                                                A = true;
+                                                                i++;
+                                                            } else if (random == 2 && DapAn != 2 && B==false) {
+                                                                btn2.setBackgroundResource(R.drawable.buttonstyle5);
+                                                                B = true;
+                                                                i++;
+                                                            } else if (random == 3 && DapAn != 3 && C==false) {
+                                                                btn3.setBackgroundResource(R.drawable.buttonstyle5);
+                                                                C = true;
+                                                                i++;
+                                                            } else if (random == 4 && DapAn != 4 && D==false) {
+                                                                btn4.setBackgroundResource(R.drawable.buttonstyle5);
+                                                                D = true;
+                                                                i++;
+                                                            }
+                                                            if(i==2)
+                                                                view.setEnabled(false);
+                                                        }
+                                                    }
+                                                })
+                                                .show();
+                                    } else {
+                                        new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
+                                                .setTitleText(msg)
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                        sweetAlertDialog.dismissWithAnimation();
+
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }.execute(NguoiChoi,"1000");
+                        sweetAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
 
     }
 }

@@ -9,6 +9,7 @@ import androidx.loader.content.Loader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -48,6 +49,12 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
         txtCredit = findViewById(R.id.TienCredit);
         sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token == "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
         String credit = sharedPreferences.getString("credit", "");
         String User = sharedPreferences.getString("ten_dang_nhap", "");
         this.txtUsername.setText(User);
@@ -75,16 +82,16 @@ public class ChonLinhVuc extends AppCompatActivity implements LoaderManager.Load
                 for (int i = 0; i < itemsArray.length(); i++) {
 
                     this.btn1.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                    ID1= itemsArray.getJSONObject(i).getString("linh_vuc_id");
+                    ID1= itemsArray.getJSONObject(i).getString("id");
                     i++;
                     this.btn2.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                    ID2= itemsArray.getJSONObject(i).getString("linh_vuc_id");
+                    ID2= itemsArray.getJSONObject(i).getString("id");
                     i++;
                     this.btn3.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                    ID3= itemsArray.getJSONObject(i).getString("linh_vuc_id");
+                    ID3= itemsArray.getJSONObject(i).getString("id");
                     i++;
                     this.btn4.setText(itemsArray.getJSONObject(i).getString("ten_linh_vuc"));
-                    ID4= itemsArray.getJSONObject(i).getString("linh_vuc_id");
+                    ID4= itemsArray.getJSONObject(i).getString("id");
             }
 
         } catch (JSONException e) {

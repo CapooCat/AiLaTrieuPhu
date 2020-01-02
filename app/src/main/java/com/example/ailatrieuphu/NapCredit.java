@@ -9,6 +9,7 @@ import androidx.loader.content.Loader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class NapCredit extends AppCompatActivity implements LoaderManager.Loader
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nap_credit);
+
         if (getSupportLoaderManager().getLoader(0) != null) {
             getSupportLoaderManager().initLoader(0, null, this);
         }
@@ -49,6 +51,12 @@ public class NapCredit extends AppCompatActivity implements LoaderManager.Loader
         this.btn10000C = findViewById(R.id.btn10000);
         sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token == "") {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
         String credit = sharedPreferences.getString("credit", "");
         txtCredit = findViewById(R.id.lblSoDu);
         this.txtCredit.setText("Số dư trong tài khoản: " + credit );

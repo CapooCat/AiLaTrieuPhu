@@ -23,10 +23,17 @@ public class TrangChu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trang_chu);
+
         txtCredit = findViewById(R.id.Credit);
         txtUser = findViewById(R.id.Username);
         sharedPreferences = getSharedPreferences("com.example.ailatrieuphu", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        String token = sharedPreferences.getString("TOKEN", "");
+        Log.d("TOKEN", token);
+        if (token == "") {
+            Intent intent = new Intent(this, TrangChu.class);
+            startActivity(intent);
+        }
         String credit = sharedPreferences.getString("credit", "");
         String User = sharedPreferences.getString("ten_dang_nhap", "");
         this.txtUser.setText(User);
