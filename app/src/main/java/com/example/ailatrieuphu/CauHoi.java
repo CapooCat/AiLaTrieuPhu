@@ -160,7 +160,7 @@ public class CauHoi extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                if (Life == 0) {
+                if (Life == 1) {
                     inCorrect();
                 } else {
                     new SweetAlertDialog(CauHoi.this, SweetAlertDialog.ERROR_TYPE)
